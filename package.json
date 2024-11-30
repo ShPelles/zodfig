@@ -1,0 +1,37 @@
+{
+  "name": "zodfig",
+  "version": "0.0.1",
+  "description": "Type-safe, hierarchical, modular config handling with Zod",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier . --write",
+    "format-check": "prettier . --check",
+    "lint": "eslint src/** test/** --fix",
+    "lint-check": "eslint src/** test/**",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "keywords": [
+    "Zod",
+    "config",
+    "env"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.16.0",
+    "@typescript-eslint/parser": "^8.16.0",
+    "@vitest/coverage-v8": "^2.1.6",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.4.1",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.6"
+  }
+}
