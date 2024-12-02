@@ -8,8 +8,9 @@ interface Zodfig<T extends z.ZodObject<z.ZodRawShape>> {
 
 export function zodfig<T extends z.ZodObject<z.ZodRawShape>>(
   schema: T,
+  customReader?: ZodfigReader
 ): Zodfig<T> {
-  const reader = new EnvReader();
+  const reader = customReader || new EnvReader();
   const parser = z.preprocess(readConfig<T>(schema, reader), schema);
 
   return {
