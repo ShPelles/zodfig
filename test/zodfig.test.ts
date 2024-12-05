@@ -13,20 +13,21 @@ describe("zodfig()", () => {
     expect(result.read).instanceOf(Function);
   });
 
-  test("should fill in values from the environment variables", () => {
+  test("should work with custom readers", () => {
     // Arrange
-    process.env.TEST001 = "foo";
-    process.env.TEST002 = "42";
+    const customReader = {
+      read: (key: string) => `${key}Value`,
+    };
     const schema = z.object({
-      TEST001: z.string(),
-      TEST002: z.coerce.number(),
+      str1: z.string(),
+      str2: z.string(),
     });
     // Act
-    const result = zodfig(schema).read();
+    const result = zodfig(schema, customReader).read();
     // Assert
     expect(result).toEqual({
-      TEST001: "foo",
-      TEST002: 42,
+      str1: "str1Value",
+      str2: "str2Value",
     });
   });
 });
