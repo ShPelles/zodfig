@@ -35,7 +35,10 @@ function readConfig<T extends z.ZodObject<z.ZodRawShape>>(
   };
 }
 
-function readFromReaders(readers: ZodfigReader[], key: string): string | undefined {
+function readFromReaders(
+  readers: ZodfigReader[],
+  key: string,
+): string | undefined {
   for (const reader of readers) {
     const value = reader.read(key);
     if (value !== undefined) {
