@@ -8,9 +8,9 @@ interface Zodfig<T extends z.ZodObject<z.ZodRawShape>> {
 
 export function zodfig<T extends z.ZodObject<z.ZodRawShape>>(
   schema: T,
-  reader: ZodfigReader = new EnvReader(),
+  readers: ZodfigReader[] = [new EnvReader()],
 ): Zodfig<T> {
-  const parser = z.preprocess(readConfig<T>(schema, reader), schema);
+  const parser = z.preprocess(readConfig<T>(schema, readers), schema);
 
   return {
     read: () => parser.parse({}),
@@ -19,13 +19,13 @@ export function zodfig<T extends z.ZodObject<z.ZodRawShape>>(
 
 function readConfig<T extends z.ZodObject<z.ZodRawShape>>(
   schema: T,
-  reader: ZodfigReader,
+  readers: ZodfigReader[],
 ): (arg: unknown, ctx: z.RefinementCtx) => unknown {
   return () => {
     const config: Record<string, string> = {};
 
     for (const key of Object.keys(schema.shape)) {
-      const value = reader.read(key);
+      const value = readFromReaders(readers, key);
       if (value !== undefined) {
         config[key] = value;
       }
@@ -33,4 +33,14 @@ function readConfig<T extends z.ZodObject<z.ZodRawShape>>(
 
     return config;
   };
+}
+
+function readFromReaders(readers: ZodfigReader[], key: string): string | undefined {
+  for (const reader of readers) {
+    const value = reader.read(key);
+    if (value !== undefined) {
+      return value;
+    }
+  }
+  return undefined;
 }
