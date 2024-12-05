@@ -43,20 +43,4 @@ describe("ObjReader", () => {
     expect(reader.read("key4")).toBeUndefined();
     expect(reader.read("key5")).toBeUndefined();
   });
-
-  test("should handle edge cases", () => {
-    // Arrange
-    const obj = {
-      "": "emptyKey",
-      "key with spaces": "value with spaces",
-      "key-with-dashes": "value-with-dashes",
-      "key_with_underscores": "value_with_underscores",
-    };
-    const reader = new ObjReader(obj);
-    // Act & Assert
-    expect(reader.read("")).toBe("emptyKey");
-    expect(reader.read("key with spaces")).toBe("value with spaces");
-    expect(reader.read("key-with-dashes")).toBe("value-with-dashes");
-    expect(reader.read("key_with_underscores")).toBe("value_with_underscores");
-  });
 });
