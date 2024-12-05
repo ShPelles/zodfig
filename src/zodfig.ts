@@ -1,4 +1,6 @@
 import { z } from "zod";
+import ZodfigReader from "./zodfig-reader";
+import EnvReader from "./env-reader";
 
 interface Zodfig<T extends z.ZodObject<z.ZodRawShape>> {
   read(): z.infer<T>;
@@ -7,26 +9,28 @@ interface Zodfig<T extends z.ZodObject<z.ZodRawShape>> {
 export function zodfig<T extends z.ZodObject<z.ZodRawShape>>(
   schema: T,
 ): Zodfig<T> {
-  const parser = z.preprocess(readEnvValues<T>(schema), schema);
+  const reader = new EnvReader();
+  const parser = z.preprocess(readConfig<T>(schema, reader), schema);
 
   return {
     read: () => parser.parse({}),
   };
 }
 
-function readEnvValues<T extends z.ZodObject<z.ZodRawShape>>(
+function readConfig<T extends z.ZodObject<z.ZodRawShape>>(
   schema: T,
+  reader: ZodfigReader,
 ): (arg: unknown, ctx: z.RefinementCtx) => unknown {
   return () => {
-    const envValues: Record<string, string> = {};
+    const config: Record<string, string> = {};
 
     for (const key of Object.keys(schema.shape)) {
-      const upperKey = key.toUpperCase();
-      if (process.env[upperKey] !== undefined) {
-        envValues[key] = process.env[upperKey];
+      const value = reader.read(key);
+      if (value !== undefined) {
+        config[key] = value;
       }
     }
 
-    return envValues;
+    return config;
   };
 }
