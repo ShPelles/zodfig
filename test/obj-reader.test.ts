@@ -11,9 +11,9 @@ describe("ObjReader", () => {
     };
     const reader = new ObjReader(obj);
     // Act & Assert
-    expect(reader.read("key1")).toBe("value1");
-    expect(reader.read("key2")).toBe("42");
-    expect(reader.read("key3")).toBe("true");
+    expect(reader.read(["key1"])).toBe("value1");
+    expect(reader.read(["key2"])).toBe("42");
+    expect(reader.read(["key3"])).toBe("true");
   });
 
   test("should return undefined for non-existent keys", () => {
@@ -23,7 +23,7 @@ describe("ObjReader", () => {
     };
     const reader = new ObjReader(obj);
     // Act & Assert
-    expect(reader.read("key2")).toBeUndefined();
+    expect(reader.read(["key2"])).toBeUndefined();
   });
 
   test("should handle different data types", () => {
@@ -37,10 +37,26 @@ describe("ObjReader", () => {
     };
     const reader = new ObjReader(obj);
     // Act & Assert
-    expect(reader.read("key1")).toBe("value1");
-    expect(reader.read("key2")).toBe("42");
-    expect(reader.read("key3")).toBe("true");
-    expect(reader.read("key4")).toBeUndefined();
-    expect(reader.read("key5")).toBeUndefined();
+    expect(reader.read(["key1"])).toBe("value1");
+    expect(reader.read(["key2"])).toBe("42");
+    expect(reader.read(["key3"])).toBe("true");
+    expect(reader.read(["key4"])).toBeUndefined();
+    expect(reader.read(["key5"])).toBeUndefined();
+  });
+
+  test("should handle nested objects", () => {
+    // Arrange
+    const obj = {
+      nested: {
+        str: "nested string",
+        inner: {
+          num: 42,
+        },
+      },
+    };
+    const reader = new ObjReader(obj);
+    // Act & Assert
+    expect(reader.read(["nested", "str"])).toBe("nested string");
+    expect(reader.read(["nested", "inner", "num"])).toBe("42");
   });
 });
