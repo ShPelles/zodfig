@@ -8,8 +8,8 @@ describe("EnvReader", () => {
     process.env.TEST002 = "42";
     // Act & Assert
     const reader = new EnvReader();
-    expect(reader.read("TEST001")).toBe("foo");
-    expect(reader.read("TEST002")).toBe("42");
+    expect(reader.read(["TEST001"])).toBe("foo");
+    expect(reader.read(["TEST002"])).toBe("42");
   });
 
   test("should return undefined if the environment variable is not set", () => {
@@ -17,7 +17,7 @@ describe("EnvReader", () => {
     process.env.TEST001 = "foo";
     // Act & Assert
     const reader = new EnvReader();
-    expect(reader.read("TEST003")).toBeUndefined();
+    expect(reader.read(["TEST003"])).toBeUndefined();
   });
 
   test("should read environment variables as uppercase key", () => {
@@ -25,6 +25,14 @@ describe("EnvReader", () => {
     process.env.TEST004 = "foo";
     // Act & Assert
     const reader = new EnvReader();
-    expect(reader.read("Test004")).toBe("foo");
+    expect(reader.read(["Test004"])).toBe("foo");
+  });
+
+  test("should handle nested keys", () => {
+    // Arrange
+    process.env.TEST006_TEST007 = "foo";
+    // Act & Assert
+    const reader = new EnvReader();
+    expect(reader.read(["TEST006", "TEST007"])).toBe("foo");
   });
 });

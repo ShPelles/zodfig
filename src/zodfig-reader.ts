@@ -1,3 +1,3 @@
 export default interface ZodfigReader {
-  read(key: string): string | undefined;
+  read(path: string[]): string | undefined;
 }
