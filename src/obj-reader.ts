@@ -5,11 +5,14 @@ export default class ObjReader implements ZodfigReader {
     this.obj = obj;
   }
 
-  read(key: string): string | undefined {
-    const value = this.obj[key];
-    if (value === undefined || value === null) {
-      return undefined;
+  read(path: string[]): string | undefined {
+    let current: Record<string, unknown> = this.obj;
+    for (const key of path) {
+      current = current[key] as Record<string, unknown>;
+      if (current === undefined || current === null) {
+        return undefined;
+      }
     }
-    return String(value);
+    return String(current);
   }
 }

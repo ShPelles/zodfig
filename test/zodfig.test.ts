@@ -17,7 +17,7 @@ describe("zodfig()", () => {
   test("should work with custom readers", () => {
     // Arrange
     const customReader = {
-      read: (key: string) => `${key}Value`,
+      read: (path: string[]) => `${path[0]}Value`,
     };
     const schema = z.object({
       str1: z.string(),
@@ -29,6 +29,32 @@ describe("zodfig()", () => {
     expect(result).toEqual({
       str1: "str1Value",
       str2: "str2Value",
+    });
+  });
+
+  test("should works with nested schemas", () => {
+    // Arrange
+    const schema = z.object({
+      nested: z.object({
+        str: z.string(),
+        inner: z.object({
+          value: z.string(),
+        }),
+      }),
+    });
+    const reader = {
+      read: (path: string[]) => path.join(">"),
+    };
+    // Act
+    const result = zodfig(schema, [reader]).read();
+    // Assert
+    expect(result).toEqual({
+      nested: {
+        str: "nested>str",
+        inner: {
+          value: "nested>inner>value",
+        },
+      },
     });
   });
 
