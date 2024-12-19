@@ -4,35 +4,36 @@ import EnvReader from "../src/env-reader";
 describe("EnvReader", () => {
   test("should read environment variables", () => {
     // Arrange
-    process.env.TEST001 = "foo";
-    process.env.TEST002 = "42";
+    process.env.SERVICE_NAME = "foo";
+    process.env.SERVICE_VERSION = "1.0.0";
     // Act & Assert
     const reader = new EnvReader();
-    expect(reader.read(["TEST001"])).toBe("foo");
-    expect(reader.read(["TEST002"])).toBe("42");
+    expect(reader.read(["SERVICE_NAME"])).toBe("foo");
+    expect(reader.read(["SERVICE_VERSION"])).toBe("1.0.0");
   });
 
   test("should return undefined if the environment variable is not set", () => {
     // Arrange
-    process.env.TEST001 = "foo";
     // Act & Assert
     const reader = new EnvReader();
-    expect(reader.read(["TEST003"])).toBeUndefined();
+    expect(reader.read(["NON_EXISTENT"])).toBeUndefined();
   });
 
   test("should read environment variables as uppercase key", () => {
     // Arrange
-    process.env.TEST004 = "foo";
+    process.env.USERS_SERVICE_URL = "https://users.xyz.com";
     // Act & Assert
     const reader = new EnvReader();
-    expect(reader.read(["Test004"])).toBe("foo");
+    expect(reader.read(["users_service_url"])).toBe("https://users.xyz.com");
   });
 
   test("should handle nested keys", () => {
     // Arrange
-    process.env.TEST006_TEST007 = "foo";
+    process.env.DATABASE_HOST = "localhost";
+    process.env.DATABASE_PORT = "5432";
     // Act & Assert
     const reader = new EnvReader();
-    expect(reader.read(["TEST006", "TEST007"])).toBe("foo");
+    expect(reader.read(["database", "host"])).toBe("localhost");
+    expect(reader.read(["database", "port"])).toBe("5432");
   });
 });
